@@ -1,0 +1,30 @@
+name: erp
+
+recipe: laravel
+
+config:
+  php: "8.3"
+  via: nginx
+  webroot: public
+  database: postgres:16
+
+services:
+  appserver:
+    build_as_root:
+      - apt-get update -y
+      - apt-get install -y libpq-dev
+      - docker-php-ext-install pdo_pgsql pgsql
+
+  node:
+    type: node:22
+
+proxy:
+  appserver_nginx:
+    - erp.lndo.site
+    - "*.erp.lndo.site"
+
+tooling:
+  npm:
+    service: node
+  node:
+    service: node
